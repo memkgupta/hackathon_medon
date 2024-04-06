@@ -4,7 +4,7 @@ import useAuth from '@/context/useAuth';
 import { loginUserProps } from '@/types';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useCookies } from 'react-cookie';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ToastContainer, toast } from 'react-toastify'
@@ -14,6 +14,7 @@ const login = () => {
     const [loading,setLoading] = useState(false);
     const { register, handleSubmit, formState:{errors} } = useForm<loginUserProps>();
     const [cookies,setCookie] = useCookies(['token']);
+    const {setAuthStatus,user,authStatus} = useAuth();
     const onSubmit:SubmitHandler<loginUserProps> = async(data)=>{
         try {
             setLoading(true);
@@ -25,12 +26,43 @@ const login = () => {
                 setCookie('token',res.data.token,{expires:new Date(Date.now()+864000000)});
                 router.replace("/home")
             }
-        } catch (error) {
-            
+        } catch (error:any) {
+           if(error.response){
+            const { status, data } = error.response;
+            switch (status) {
+              case 400:
+                // Bad Request: Handle validation errors or incorrect input
+                toast.error( data);
+                break;
+              case 401:
+                // Unauthorized: Handle authentication failures
+                toast.error( data);
+                break;
+              case 404:
+                // Not Found: Handle resource not found errors
+                toast.error( data);
+                break;
+              case 500:
+                // Internal Server Error: Handle server-side errors
+                toast.error( data);
+                break;
+              // Add more cases for other status codes as needed
+              default:
+                toast.error( data);
+            }
+           }
+           else {
+            // Something happened in setting up the request that triggered an error
+           toast.error(error.message)
+          }
         }
     }
 
-    const {setAuthStatus,user,authStatus} = useAuth();
+    useEffect(()=>{
+      if(authStatus){
+router.replace("/home");
+      }
+    },[authStatus])
   return (
     <div className='flex flex-col justify-center h-screen gap-4 items-center'>
     <ToastContainer>

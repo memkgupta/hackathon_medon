@@ -6,7 +6,7 @@ import React from 'react'
 import { GrUserManager } from "react-icons/gr";
 const Navbar = () => {
   return (
-    <nav className="flex justify-between items-center fixed z-50 w-full  px-6 py-4 lg:px-10 bg-red-200">
+    <nav className="flex justify-between items-center  w-full  px-6 py-4 lg:px-10 bg-red-200">
     <Link href="/home" className="flex items-center gap-1">
       <Image
         src="/vercel.svg"
