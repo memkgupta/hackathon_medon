@@ -36,3 +36,12 @@ export interface registerDoctorProps {
     consultationFee:number,
     operationalWeek:operationalWeek
 }
+export interface doctorProps{
+    _id:string,
+    name:string,
+    qualifications:qualification[],
+    gender:string,
+    operationalWeek:operationalWeek,
+    image:string,
+    ratings:number
+}
